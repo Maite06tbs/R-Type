@@ -1,0 +1,238 @@
+
+Internet Engineering Task Force (IETF)                     R-Type Protocol Specification
+Request for Comments: XXXX                                             October 13, 2025
+Category: Informational
+ISSN: 2070-1721
+
+
+                   R-Type Game Communication Protocol (R-TYPE-PROTO)
+
+Authors: Kévin Nouhouayi, Maïté Tobossi, Henoc Dovonou, Romaric Dega
+
+
+Status of This Memo
+-------------------
+This memo provides information for the R-Type development community. Distribution of this
+memo is unlimited. It does not specify an Internet standard of any kind.
+
+Abstract
+--------
+This document defines the binary communication protocol used between the client and server
+of the R-Type multiplayer game. It specifies message formats, data serialization, and
+communication semantics to ensure interoperability between clients and servers.
+
+
+Table of Contents
+-----------------
+1. Introduction ...................................................... 2
+2. Terminology ....................................................... 2
+3. Design Overview ................................................... 3
+4. Transport Layer Considerations .................................... 3
+5. Message Format .................................................... 4
+6. Opcodes and Message Types ......................................... 5
+   6.1. Client-to-Server Messages .................................... 5
+   6.2. Server-to-Client Messages .................................... 7
+7. Data Types and Serialization ...................................... 9
+8. Error Handling .................................................... 10
+9. Security Considerations ........................................... 11
+10. Future Work and Extensions ....................................... 11
+11. Authors' Addresses ............................................... 12
+
+
+1. Introduction
+---------------
+The R-Type protocol defines a compact binary interface for real-time communication between
+a client and a server. The architecture follows an *authoritative server* model: the client
+sends player inputs to the server, which updates the game state and broadcasts updates to
+all clients.
+
+This document describes the protocol version 1.0.0 as of October 13, 2025.
+
+
+2. Terminology
+--------------
+The following terms are used in this document:
+
+- **Client:** A player’s instance that sends inputs and renders received game state.
+- **Server:** The authoritative game host responsible for managing entities and synchronizing state.
+- **Entity:** Any active object in the game world (player, enemy, projectile, etc.).
+- **Opcode:** A one-byte identifier that specifies the message type.
+- **Payload:** The binary data following an opcode.
+
+Normative language such as *MUST*, *SHOULD*, *MAY* is to be interpreted as described in RFC 2119.
+
+
+3. Design Overview
+------------------
+The R-Type protocol is a binary communication layer intended for real-time gameplay.
+It minimizes latency and bandwidth usage by avoiding text formats (e.g., JSON, XML).
+
+All multi-byte fields MUST be encoded in **Big Endian (network byte order)**.
+
+Reliability-critical actions (e.g., connection setup) use TCP. All gameplay updates use UDP.
+
+
+4. Transport Layer Considerations
+---------------------------------
+- **UDP:** Used connection establishment and reliable control messages, gameplay data (e.g., player inputs,
+  entity updates).
+
+
+5. Message Format
+-----------------
+Each UDP message consists of a one-byte header followed by message-specific payload data.
+
+    +--------+---------------------+
+    | OpCode | Message Payload ... |
+    +--------+---------------------+
+
+- **OpCode (1 byte):** Identifies the message type.
+- **Payload:** Structured binary data depending on the OpCode.
+
+
+6. Opcodes and Message Types
+----------------------------
+
+6.1. Client-to-Server Messages (C2S)
+------------------------------------
+
+**Opcode 0x01 – JOIN_GAME**
+
+Description: Initial client request to join a game session.
+
+Payload:
+    - String (UTF-8): "JOIN" (up to 1024 bytes)
+
+---
+
+**Opcode 0x02 – PLAYER_INPUT**
+
+Description: Sent every frame or when player input changes.
+
+Payload (1 byte):
+    Bitfield representation of player actions.
+
+    Bit | Action
+    ----+--------
+     0  | UP
+     1  | DOWN
+     2  | LEFT
+     3  | RIGHT
+     4  | SHOOT
+
+
+6.2. Server-to-Client Messages (S2C)
+------------------------------------
+
+**Opcode 0x10 – ACCEPT_PLAYER**
+
+Description: Acknowledges player connection.
+
+Payload:
+    - String (UTF-8): "OK"
+
+---
+
+**Opcode 0x11 – ENTITY_SPAWN**
+
+Description: Server notifies clients of a new entity.
+
+Payload:
+    - uint32_t  Entity ID
+    - uint8_t   Entity Type (0=Player, 1=Enemy_1, 2=Player_Bullet)
+    - float     X position
+    - float     Y position
+
+---
+
+**Opcode 0x12 – ENTITY_UPDATE**
+
+Description: Updates one or multiple entities.
+
+Payload:
+    - uint8_t   Entity Count (N)
+    - N × [uint32_t ID, float X, float Y]
+
+---
+
+**Opcode 0x13 – ENTITY_DESTROY**
+
+Description: Indicates entity removal.
+
+Payload:
+    - uint32_t Entity ID
+
+---
+
+**Opcode 0x20 – PLAYER_DEATH**
+Description: Notifies the player that their ship has been destroyed.
+
+**Opcode 0x21 – PLAYER_VICTORY**
+Description: Notifies the player that they have won the match.
+
+
+7. Data Types and Serialization
+-------------------------------
+All numeric fields MUST use network byte order (Big Endian).
+
+Type definitions:
+    - uint8_t  : 1 byte unsigned integer
+    - uint16_t : 2 bytes unsigned integer
+    - uint32_t : 4 bytes unsigned integer
+    - float    : 4 bytes IEEE 754 floating-point number
+
+Example serialization (pseudo-code):
+
+    function serializeSpawnMessage(entity):
+        buffer = new Buffer()
+        buffer.write_uint8(0x11)
+        buffer.write_uint32_be(entity.id)
+        buffer.write_uint8(entity.type)
+        buffer.write_float_be(entity.x)
+        buffer.write_float_be(entity.y)
+        return buffer
+
+
+8. Error Handling
+-----------------
+- Unknown OpCodes MUST be ignored silently.
+- Malformed packets MUST be discarded to prevent crashes or security vulnerabilities.
+- Clients SHOULD validate payload length before reading.
+
+Servers MUST handle unexpected disconnects gracefully.
+
+
+9. Security Considerations
+--------------------------
+This protocol assumes a trusted network environment. However, implementers SHOULD:
+
+- Validate all input data.
+- Prevent buffer overflows.
+- Use authentication layers if deployed over the Internet.
+
+
+10. Future Work and Extensions
+------------------------------
+Future versions MAY define new OpCodes for:
+
+- Score reporting
+- End-of-game events
+- Chat messages or player states
+
+
+11. Authors' Addresses
+----------------------
+   Kévin Nouhouayi
+   Email: kevin.nouhouayi@epitech.eu
+
+   Maïté Tobossi
+   Email: maite.tobossi@epitech.eu
+
+   Henoc Dovonou
+   Email: henoc.dovonou@epitech.eu
+
+   Romaric Dega
+   Email: romaric.dega@epitech.eu
+
+   Asaph CAKPO
+   Email: asaph.cakpo@epitech.eu
