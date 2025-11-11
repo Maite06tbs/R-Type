@@ -1,7 +1,7 @@
 {
   "name": "r-type_documentation",
   "version": "1.0.0",
-  "description": "",
+  "description": "This directory contains the complete documentation for the R-Type project using **VitePress**.",
   "main": "index.js",
   "directories": {
     "doc": "docs"
@@ -39,9 +39,19 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "preview": "vitepress preview docs"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "Maite06Tbs",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Maite06tbs/R-Type.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Maite06tbs/R-Type/issues"
+  },
+  "homepage": "https://github.com/Maite06tbs/R-Type#readme"
 }

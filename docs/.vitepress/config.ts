@@ -3,6 +3,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: 'R-Type Documentation',
   description: 'Complete Documentation of the R-Type project - ECS Game Engine, Client-Server Architecture, Network Protocol',
+  base: '/R-Type/',  // Important pour GitHub Pages
   
   themeConfig: {
     nav: [
