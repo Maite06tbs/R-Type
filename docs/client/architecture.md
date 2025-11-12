@@ -798,9 +798,10 @@ void RenderSystem::debug_draw_colliders(sf::RenderWindow& window) {
 
 ---
 
+
 ## Next Steps
 
-<!-- - [Server Architecture](/server/architecture) - How the server works
-- [Network Protocol](/network/protocol) - Packet structures
-- [Game Engine](/engine/overview) - Shared ECS system -->
-- [Gameplay Systems](/gameplay/overview) - Weapons, power-ups, bosses
+- [Server Architecture](/server/architecture.md) - How the server works
+- [Network Protocol](/network/protocol.md) - Packet structures
+- [Game Engine](/engine/overview.md) - Shared ECS system
+

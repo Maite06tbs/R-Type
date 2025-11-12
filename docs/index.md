@@ -146,12 +146,12 @@ make rebuild
 
 Comprehensive documentation is available in the `/docs` folder:
 
-- **[Developer Guide](docs/DEVELOPER.md)** - Architecture and development guidelines
-- **[Architecture Overview](docs/ARCHITECTURE.md)** - System design and components
-- **[Network Protocol](docs/PROTOCOL.md)** - Client-server communication specification  
-- **[Build Guide](BUILD.md)** - Detailed compilation instructions
-- **[Technology Choices](docs/TECHNOLOGY_ANALYSIS.md)** - Technical decisions and comparisons
-- **[Game Development Guide](docs/GAME_DEV.md)** - Adding entities, weapons, and features
+- **[Developer Guide](/DEVELOPER.md)** - Architecture and development guidelines
+- **[Server Architecture](/server/architecture.md)** - Server design and components
+- **[Client Architecture](/client/architecture.md)** - Client implementation
+- **[Network Protocol](/network/protocol.md)** - Client-server communication specification  
+- **[Technology Choices](/TECHNOLOGY_ANALYSIS.md)** - Technical decisions and comparisons
+- **[Game Engine](/engine/overview.md)** - ECS architecture and systems
 
 ## Contributing
 

@@ -173,7 +173,7 @@ docs/R-Type_Documentation/
 │   │   └── architecture.md
 │   ├── network/              # Network protocol docs
 │   │   └── protocol.md
-│   ├── README.md             # Introduction
+│   ├── index.md             # Introduction
 │   ├── DEVELOPER.md          # Developer guide
 │   └── TECHNOLOGY_ANALYSIS.md
 ├── package.json              # Dependencies
